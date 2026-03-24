@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+python-dotenv
+googlemaps
+requests
+passlib[bcrypt]
+python-jose[cryptography]
+scikit-learn
+numpy
+scipy
+bcrypt==4.0.1

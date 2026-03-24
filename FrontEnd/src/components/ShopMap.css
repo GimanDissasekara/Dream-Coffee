@@ -1,0 +1,143 @@
+.shop-map {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-card);
+  position: relative;
+}
+
+.shop-map__container {
+  background: var(--bg-secondary);
+}
+
+/* Custom marker styling */
+.shop-marker__pin {
+  width: 36px;
+  height: 36px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 10px rgba(212, 160, 86, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.shop-marker__pin:hover {
+  transform: rotate(-45deg) scale(1.15);
+}
+
+.user-marker__pin {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(96, 165, 250, 0.2);
+  border: 2px solid var(--info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  animation: pulse-user 2s ease-in-out infinite;
+}
+
+@keyframes pulse-user {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.3); }
+  50% { box-shadow: 0 0 0 12px rgba(96, 165, 250, 0); }
+}
+
+/* Override Leaflet default marker icon styles */
+.shop-marker,
+.user-marker {
+  background: none !important;
+  border: none !important;
+}
+
+/* Popup styling — dark theme */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-card) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-card) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+  font-size: 18px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--text-primary) !important;
+}
+
+.shop-map__popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px;
+  min-width: 160px;
+}
+
+.shop-map__popup-name {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.shop-map__popup-rating {
+  display: flex;
+  align-items: center;
+}
+
+.shop-map__popup-address {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.shop-map__popup-link {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: var(--bg-primary);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: center;
+  transition: var(--transition-fast);
+}
+
+.shop-map__popup-link:hover {
+  background: var(--accent-light);
+}
+
+/* Leaflet zoom controls — dark theme */
+.leaflet-control-zoom a {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-card) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--bg-card-hover) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(10, 10, 18, 0.7) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.65rem !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--text-secondary) !important;
+}
