@@ -53,6 +53,9 @@ def get_recommendations(
         if shop.photo_refs and len(shop.photo_refs) > 0:
             photo_url = gm.get_photo_url(shop.photo_refs[0])
 
+        if shop.status != "active":
+            continue
+
         is_new = (
             shop.created_at is not None
             and (now - shop.created_at) < timedelta(days=NEW_SHOP_DAYS)
@@ -88,7 +91,7 @@ def get_shop_detail(
     # Fetch fresh details from Google Maps (also updates DB)
     gm.get_shop_details(place_id, db=db)
 
-    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id).first()
+    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id, CoffeeShop.status == "active").first()
     if not shop:
         raise HTTPException(status_code=404, detail="Shop not found")
 
@@ -106,7 +109,7 @@ def get_shop_detail(
     photo_urls = [gm.get_photo_url(ref) for ref in (shop.photo_refs or [])]
 
     # Get reviews
-    reviews = db.query(Review).filter(Review.shop_id == shop.id).all()
+    reviews = db.query(Review).filter(Review.shop_id == shop.id, Review.status == "active").all()
 
     now = datetime.utcnow()
     is_new = (
@@ -143,7 +146,7 @@ def get_shop_photos(
     db: Session = Depends(get_db),
 ):
     """Return photo URLs for a shop."""
-    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id).first()
+    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id, CoffeeShop.status == "active").first()
     if not shop:
         raise HTTPException(status_code=404, detail="Shop not found")
 
@@ -162,7 +165,7 @@ def get_shop_reviews(
     current_user: Optional[User] = Depends(get_current_user),
 ):
     """Paginated reviews for a shop."""
-    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id).first()
+    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id, CoffeeShop.status == "active").first()
     if not shop:
         raise HTTPException(status_code=404, detail="Shop not found")
 
@@ -176,10 +179,10 @@ def get_shop_reviews(
         db.add(interaction)
         db.commit()
 
-    total = db.query(Review).filter(Review.shop_id == shop.id).count()
+    total = db.query(Review).filter(Review.shop_id == shop.id, Review.status == "active").count()
     reviews = (
         db.query(Review)
-        .filter(Review.shop_id == shop.id)
+        .filter(Review.shop_id == shop.id, Review.status == "active")
         .order_by(Review.time.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
@@ -206,7 +209,7 @@ def get_directions(
     current_user: Optional[User] = Depends(get_current_user),
 ):
     """Generate a Google Maps directions link for navigation."""
-    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id).first()
+    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id, CoffeeShop.status == "active").first()
     if not shop:
         raise HTTPException(status_code=404, detail="Shop not found")
 
@@ -246,7 +249,7 @@ def log_interaction(
             detail=f"interaction_type must be one of {valid_types}",
         )
 
-    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id).first()
+    shop = db.query(CoffeeShop).filter(CoffeeShop.place_id == place_id, CoffeeShop.status == "active").first()
     if not shop:
         raise HTTPException(status_code=404, detail="Shop not found")
 

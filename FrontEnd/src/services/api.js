@@ -35,11 +35,11 @@ API.interceptors.response.use(
 );
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-export const register = (email, password) =>
-  API.post('/auth/register', { email, password });
+export const register = (username, email, password) =>
+  API.post('/auth/register', { username, email, password });
 
-export const login = (email, password) =>
-  API.post('/auth/login', { email, password });
+export const login = (username, password) =>
+  API.post('/auth/login', { username, password });
 
 // ── Shops ─────────────────────────────────────────────────────────────────────
 export const getRecommendations = (lat, lng, radius = 5000) =>
@@ -61,5 +61,24 @@ export const getDirections = (placeId, originLat, originLng) =>
 
 export const logInteraction = (placeId, interactionType) =>
   API.post(`/shops/${placeId}/interact`, { interaction_type: interactionType });
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+export const adminGetUsers = () => API.get('/admin/users');
+export const adminUpdateUser = (id, data) => API.put(`/admin/users/${id}`, data);
+export const adminDeleteUser = (id) => API.delete(`/admin/users/${id}`);
+
+export const adminGetShops = () => API.get('/admin/shops');
+export const adminAddShop = (data) => API.post('/admin/shops', data);
+export const adminUpdateShop = (id, data) => API.put(`/admin/shops/${id}`, data);
+export const adminDeleteShop = (id) => API.delete(`/admin/shops/${id}`);
+
+export const adminGetReviews = () => API.get('/admin/reviews');
+export const adminUpdateReview = (id, data) => API.put(`/admin/reviews/${id}`, data);
+export const adminDeleteReview = (id) => API.delete(`/admin/reviews/${id}`);
+
+export const adminGetConfig = () => API.get('/admin/config');
+export const adminUpdateConfig = (key, data) => API.put(`/admin/config/${key}`, data);
+
+export const adminGetAnalytics = () => API.get('/admin/analytics');
 
 export default API;

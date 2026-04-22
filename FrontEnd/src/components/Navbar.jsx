@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiCoffee, FiLogIn, FiLogOut, FiUser, FiMenu, FiX } from 'react-icons/fi';
+import { FiCoffee, FiLogIn, FiLogOut, FiUser, FiMenu, FiX, FiShield } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
@@ -38,19 +38,30 @@ export default function Navbar() {
 
         <div className={`navbar__links ${mobileOpen ? 'navbar__links--open' : ''}`}>
           {isAuthenticated && (
-            <Link
-              to="/home"
-              className={`navbar__link ${isActive('/home') ? 'navbar__link--active' : ''}`}
-              onClick={() => setMobileOpen(false)}
-            >
-              Discover
-            </Link>
+            <>
+              <Link
+                to="/home"
+                className={`navbar__link ${isActive('/home') ? 'navbar__link--active' : ''}`}
+                onClick={() => setMobileOpen(false)}
+              >
+                Discover
+              </Link>
+              {user?.role === 'admin' && (
+                <Link
+                  to="/admin"
+                  className={`navbar__link ${isActive('/admin') ? 'navbar__link--active' : ''}`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <FiShield style={{ marginRight: '4px' }} /> Admin
+                </Link>
+              )}
+            </>
           )}
 
           {isAuthenticated ? (
             <div className="navbar__auth">
               <span className="navbar__user">
-                <FiUser /> {user?.email?.split('@')[0]}
+                <FiUser /> {user?.username || user?.email?.split('@')[0] || 'User'}
               </span>
               <button className="navbar__btn navbar__btn--logout" onClick={handleLogout}>
                 <FiLogOut /> Logout

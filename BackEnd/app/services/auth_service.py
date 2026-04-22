@@ -58,6 +58,8 @@ def get_current_user(
     except JWTError:
         return None
     user = db.query(User).filter(User.id == user_id).first()
+    if user and user.status == "suspended":
+        return None
     return user
 
 
@@ -78,4 +80,15 @@ def require_user(
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+    if user.status == "suspended":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is suspended")
+    return user
+
+
+def require_admin(
+    user: User = Depends(require_user)
+) -> User:
+    """Dependency that REQUIRES an active admin user."""
+    if user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient privileges")
     return user

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiLogIn, FiCoffee } from 'react-icons/fi';
+import { FiUser, FiLock, FiLogIn, FiCoffee } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import './Auth.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { loginUser, loading } = useAuth();
   const { addToast } = useToast();
@@ -19,18 +19,22 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
-      addToast('Please enter your email address', 'warning');
+    if (!username.trim()) {
+      addToast('Please enter your username', 'warning');
       return;
     }
     if (!password) {
       addToast('Please enter your password', 'warning');
       return;
     }
-    const result = await loginUser(email, password);
+    const result = await loginUser(username, password);
     if (result.success) {
       addToast('Welcome back! ☕', 'success');
-      navigate(from, { replace: true });
+      if (result.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } else {
       addToast(result.error, 'error');
     }
@@ -57,15 +61,15 @@ export default function Login() {
 
         <form className="auth-card__form" onSubmit={handleSubmit}>
           <div className="auth-card__field">
-            <FiMail className="auth-card__field-icon" />
+            <FiUser className="auth-card__field-icon" />
             <input
-              id="login-email"
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="login-username"
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              autoComplete="email"
+              autoComplete="username"
             />
           </div>
 

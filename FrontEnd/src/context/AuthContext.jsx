@@ -66,13 +66,16 @@ export function AuthProvider({ children }) {
     setUser(userVal);
   }, []);
 
-  const loginUser = useCallback(async (email, password) => {
+  const loginUser = useCallback(async (username, password) => {
     setLoading(true);
     try {
-      const res = await api.login(email, password);
+      const res = await api.login(username, password);
       const tokenVal = res.data.access_token;
-      saveAuth(tokenVal, { email });
-      return { success: true };
+      
+      const payload = decodeToken(tokenVal);
+      const userRole = payload?.role || 'user';
+      saveAuth(tokenVal, { username, role: userRole });
+      return { success: true, role: userRole };
     } catch (err) {
       const msg = err.response?.data?.detail || 'Login failed. Please check your credentials.';
       return { success: false, error: msg };
@@ -81,14 +84,16 @@ export function AuthProvider({ children }) {
     }
   }, [saveAuth]);
 
-  const registerUser = useCallback(async (email, password) => {
+  const registerUser = useCallback(async (username, email, password) => {
     setLoading(true);
     try {
-      const res = await api.register(email, password);
+      const res = await api.register(username, email, password);
       // Auto-login after successful registration
-      const loginRes = await api.login(email, password);
+      const loginRes = await api.login(username, password);
       const tokenVal = loginRes.data.access_token;
-      saveAuth(tokenVal, { email, id: res.data.id });
+      
+      const payload = decodeToken(tokenVal);
+      saveAuth(tokenVal, { username, email, id: res.data.id, role: payload?.role || 'user' });
       return { success: true };
     } catch (err) {
       const msg = err.response?.data?.detail || 'Registration failed. Please try again.';

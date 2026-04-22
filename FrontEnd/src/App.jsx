@@ -12,6 +12,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import ShopDetail from './pages/ShopDetail';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/AdminRoute';
 import './App.css';
 
 export default function App() {
@@ -41,6 +43,11 @@ export default function App() {
                     } />
                     <Route path="/shop/:placeId" element={
                       <ProtectedRoute><ShopDetail /></ProtectedRoute>
+                    } />
+
+                    {/* Admin only routes */}
+                    <Route path="/admin" element={
+                      <AdminRoute><AdminDashboard /></AdminRoute>
                     } />
                   </Routes>
                 </AnimatePresence>

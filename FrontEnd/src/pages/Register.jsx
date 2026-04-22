@@ -7,6 +7,7 @@ import { useToast } from '../context/ToastContext';
 import './Auth.css';
 
 export default function Register() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -16,6 +17,10 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!username.trim()) {
+      addToast('Please enter a username', 'warning');
+      return;
+    }
     if (!email.trim()) {
       addToast('Please enter your email address', 'warning');
       return;
@@ -28,7 +33,7 @@ export default function Register() {
       addToast('Passwords do not match', 'error');
       return;
     }
-    const result = await registerUser(email, password);
+    const result = await registerUser(username, email, password);
     if (result.success) {
       addToast('Account created! Welcome to BrewMap ☕', 'success');
       navigate('/home', { replace: true });
@@ -57,6 +62,19 @@ export default function Register() {
         </div>
 
         <form className="auth-card__form" onSubmit={handleSubmit}>
+          <div className="auth-card__field">
+            <FiUserPlus className="auth-card__field-icon" />
+            <input
+              id="register-username"
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              autoComplete="username"
+            />
+          </div>
+
           <div className="auth-card__field">
             <FiMail className="auth-card__field-icon" />
             <input
